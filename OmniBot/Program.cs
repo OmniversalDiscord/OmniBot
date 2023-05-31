@@ -1,6 +1,7 @@
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
+using OmniBot;
 using OmniBot.Commands;
 using OmniBot.Commands.Modules;
 using Serilog;
@@ -12,17 +13,17 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 
 await Host.CreateDefaultBuilder(args)
-    .UseConsoleLifetime()
     .ConfigureServices(services =>
     {
         services.AddLogging(logging => logging.ClearProviders().AddSerilog());
         services.AddSingleton<Commands>();
         services.AddHostedService<OmniBotService>();
     })
+    .ConfigureHostConfiguration(hostConfig =>
+        hostConfig.Add(new SecretsConfigurationSource("OmniBot_Secrets")))
     .RunConsoleAsync();
 
 await Log.CloseAndFlushAsync();
-
 
 internal sealed class OmniBotService : IHostedService
 {
