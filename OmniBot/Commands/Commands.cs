@@ -10,9 +10,9 @@ namespace OmniBot.Commands;
 
 public class Commands
 {
-    private IServiceProvider _services;
-    private ILogger<Commands> _logger;
-    private ulong _guildId;
+    private readonly IServiceProvider _services;
+    private readonly ILogger<Commands> _logger;
+    private readonly ulong _guildId;
     private bool _isConfigured;
 
     public Commands(IServiceProvider services, IConfiguration configuration, ILogger<Commands> logger)
