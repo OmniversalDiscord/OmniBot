@@ -8,9 +8,16 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="96bd32d0-aae4-4f88-ad31-1271e24e080e" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/.dockerignore" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/OmniBot/Commands/Attributes/RequireUserInChannel.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OmniBot/Commands/Commands.cs" afterDir="false" />
       <change afterPath="$PROJECT_DIR$/OmniBot/Commands/Exceptions.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/OmniBot/Commands/Modules/ChannelSize.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/OmniBot/Commands/Extensions/MemberExtensions.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.OmniBot/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.OmniBot/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OmniBot/Commands/Modules/ChannelSize.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OmniBot/Commands/Modules/ChannelSize.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OmniBot/OmniBot.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/OmniBot/OmniBot.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/OmniBot/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/OmniBot/Program.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -90,9 +97,26 @@
         <option name="Build" />
       </method>
     </configuration>
+    <configuration name="OmniBot/Dockerfile" type="docker-deploy" factoryName="dockerfile">
+      <deployment type="dockerfile">
+        <settings>
+          <option name="imageTag" value="omnibot" />
+          <option name="containerName" value="omnibot" />
+          <option name="contextFolderPath" value="$PROJECT_DIR$" />
+          <option name="sourceFilePath" value="OmniBot/Dockerfile" />
+        </settings>
+      </deployment>
+      <EXTENSION ID="com.jetbrains.rider.docker.debug" isFastModeEnabled="true" isSslEnabled="true" />
+      <method v="2" />
+    </configuration>
+    <configuration default="true" type="docker-deploy" factoryName="dockerfile" temporary="true">
+      <deployment type="dockerfile" />
+      <method v="2" />
+    </configuration>
     <list>
       <item itemvalue=".NET Launch Settings Profile.OmniBot" />
       <item itemvalue=".NET Project.OmniBot" />
+      <item itemvalue="Docker.OmniBot/Dockerfile" />
     </list>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -111,7 +135,7 @@
       <workItem from="1682937118844" duration="2621000" />
       <workItem from="1683559716979" duration="3374000" />
       <workItem from="1685365316579" duration="812000" />
-      <workItem from="1685368545681" duration="13635000" />
+      <workItem from="1685368545681" duration="23308000" />
     </task>
     <task id="LOCAL-00001" summary="Project framework">
       <created>1673545607615</created>
@@ -120,7 +144,14 @@
       <option name="project" value="LOCAL" />
       <updated>1673545607615</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL-00002" summary="Project scaffold">
+      <created>1685464139221</created>
+      <option name="number" value="00002" />
+      <option name="presentableId" value="LOCAL-00002" />
+      <option name="project" value="LOCAL" />
+      <updated>1685464139221</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -131,6 +162,15 @@
   <component name="VcsManagerConfiguration">
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Project framework" />
-    <option name="LAST_COMMIT_MESSAGE" value="Project framework" />
+    <MESSAGE value="Project scaffold" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
+  </component>
+  <component name="XDebuggerManager">
+    <pin-to-top-manager>
+      <pinned-members>
+        <PinnedItemInfo parentTag="Type#System.Collections.Generic.List`1" memberName="_items" />
+        <PinnedItemInfo parentTag="Frame#OmniBot.Commands.Commands.LogConfiguredCommands" memberName="commands" />
+      </pinned-members>
+    </pin-to-top-manager>
   </component>
 </project>

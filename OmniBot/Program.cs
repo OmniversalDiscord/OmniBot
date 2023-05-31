@@ -1,10 +1,13 @@
 using DSharpPlus;
 using DSharpPlus.EventArgs;
 using DSharpPlus.SlashCommands;
+using OmniBot.Commands;
 using OmniBot.Commands.Modules;
 using Serilog;
+using Serilog.Exceptions;
 
 Log.Logger = new LoggerConfiguration()
+    .Enrich.WithExceptionDetails()
     .WriteTo.Console()
     .CreateLogger();
 
@@ -13,6 +16,7 @@ await Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
     {
         services.AddLogging(logging => logging.ClearProviders().AddSerilog());
+        services.AddSingleton<Commands>();
         services.AddHostedService<OmniBotService>();
     })
     .RunConsoleAsync();
@@ -33,12 +37,7 @@ internal sealed class OmniBotService : IHostedService
         return Task.CompletedTask;
     }
 
-    private static void RegisterCommands(ulong guildId, SlashCommandsExtension slash)
-    {
-        slash.RegisterCommands<ChannelSize>(guildId);
-    }
-    
-    public OmniBotService(ILogger<OmniBotService> logger, IServiceProvider services, IConfiguration config)
+    public OmniBotService(ILogger<OmniBotService> logger, Commands commands, IConfiguration config)
     {
         _logger = logger;
         _discord = new DiscordClient(new DiscordConfiguration
@@ -46,17 +45,12 @@ internal sealed class OmniBotService : IHostedService
             Token = config["DiscordToken"],
             TokenType = TokenType.Bot,
             Intents = DiscordIntents.All,
+            LogUnknownEvents = false,
             LoggerFactory = new LoggerFactory().AddSerilog()
         });
 
         _discord.Ready += OnReady;
-
-        var slash = _discord.UseSlashCommands(new SlashCommandsConfiguration
-        {
-            Services = services
-        });
-
-        RegisterCommands(ulong.Parse(config["GuildId"]!), slash);
+        commands.Register(_discord);
     }
 
     public async Task StartAsync(CancellationToken token)
