@@ -1,5 +1,3 @@
-using DSharpPlus.SlashCommands;
-
 namespace OmniBot.Commands;
 
 public class CommandException : Exception

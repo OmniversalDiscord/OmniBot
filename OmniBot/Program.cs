@@ -1,9 +1,7 @@
 using DSharpPlus;
 using DSharpPlus.EventArgs;
-using DSharpPlus.SlashCommands;
 using OmniBot;
 using OmniBot.Commands;
-using OmniBot.Commands.Modules;
 using Serilog;
 using Serilog.Exceptions;
 
