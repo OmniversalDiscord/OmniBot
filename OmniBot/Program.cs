@@ -34,7 +34,7 @@ internal sealed class OmniBotService : IHostedService
     {
         var botUser = client.CurrentUser!;
         var username = $"{botUser.Username}#{botUser.Discriminator}";
-        _logger.LogInformation("Connected as {username}", username);
+        _logger.LogInformation("Connected as {Username}", username);
         return Task.CompletedTask;
     }
 

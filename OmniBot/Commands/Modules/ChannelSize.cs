@@ -33,7 +33,7 @@ public class ChannelSize : ApplicationCommandModule
 
         var embed = new DiscordEmbedBuilder()
             .WithTitle("Channel resized")
-            .WithDescription($"Resized {channel.Name} to {newSize} users")
+            .WithDescription($"Resized {channel.Name} to {newSize} user{(newSize == 1 ? "" : "s")}")
             .WithColor(DiscordColor.Azure);
 
         await ctx.CreateResponseAsync(embed);
