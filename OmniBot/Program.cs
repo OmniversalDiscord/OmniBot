@@ -2,7 +2,11 @@ using DSharpPlus;
 using DSharpPlus.EventArgs;
 using OmniBot;
 using OmniBot.Commands;
+using OmniBot.Sinks;
 using Serilog;
+using Serilog.Core;
+
+Log.Logger = new LoggerConfiguration().CreateBootstrapLogger();
 
 await Host.CreateDefaultBuilder(args)
     .ConfigureServices(services =>
@@ -20,8 +24,11 @@ await Host.CreateDefaultBuilder(args)
                 LoggerFactory = new LoggerFactory().AddSerilog()
             });
         });
-        services.AddSingleton<Commands>();
-        services.AddHostedService<OmniBotService>();
+
+        services
+            .AddSingleton<ILogEventSink, DiscordSink>()
+            .AddSingleton<Commands>()
+            .AddHostedService<OmniBotService>();
     })
     .ConfigureHostConfiguration(hostConfig =>
         hostConfig.Add(new SecretsConfigurationSource("OmniBot_Secrets")))
@@ -29,6 +36,7 @@ await Host.CreateDefaultBuilder(args)
     {
         configuration
             .ReadFrom.Configuration(context.Configuration)
+            .ReadFrom.Services(services)
             .WriteTo.Console();
     })
     .RunConsoleAsync();
