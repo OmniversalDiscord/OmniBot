@@ -1,0 +1,7 @@
+guildId: 342309270139830272
+
+logging:
+  logLevel:
+    default: Debug
+  discord:
+    channel: 481945686942810148

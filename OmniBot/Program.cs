@@ -9,6 +9,8 @@ Log.Logger = new LoggerConfiguration().CreateBootstrapLogger();
 
 var builder = Host.CreateApplicationBuilder(args);
 
+builder.Configuration.AddYamlFile("appsettings.yml");
+builder.Configuration.AddYamlFile($"appsettings.{builder.Environment.EnvironmentName}.yml", true);
 builder.Configuration.AddSecrets("OmniBot_Secrets");
 
 builder.Services
@@ -28,16 +30,17 @@ builder.Services
 
 builder.Services
     .AddSingleton<ILogEventSink, DiscordSink>()
+    .AddSerilog((services, configuration) =>
+    {
+        configuration
+            .ReadFrom.Configuration(services.GetRequiredService<IConfiguration>())
+            .ReadFrom.Services(services)
+            .WriteTo.Console();
+    });
+
+builder.Services
     .AddSingleton<Commands>()
     .AddHostedService<OmniBotHost>();
-
-builder.Services.AddSerilog((services, configuration) =>
-{
-    configuration
-        .ReadFrom.Configuration(services.GetRequiredService<IConfiguration>())
-        .ReadFrom.Services(services)
-        .WriteTo.Console();
-});
 
 await builder.Build().RunAsync();
 

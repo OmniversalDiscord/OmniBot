@@ -1,0 +1,12 @@
+guildId: 299346213126275072
+
+lavalink:
+  host: localhost
+  port: 2333
+
+logging:
+  logLevel:
+    default: Information
+  discord:
+    channel: 371028953499959296
+    pingUser: 131859790593785856
