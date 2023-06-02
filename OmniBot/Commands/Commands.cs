@@ -1,52 +1,62 @@
+using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.Entities;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
 using OmniBot.Commands.Attributes;
-using OmniBot.Commands.Modules;
-using Serilog;
 
 namespace OmniBot.Commands;
 
 public class Commands
 {
-    private readonly IServiceProvider _services;
+    private static bool _isConfigured;
     private readonly ILogger<Commands> _logger;
-    private readonly ulong _guildId;
-    private bool _isConfigured;
 
-    public Commands(IServiceProvider services, IConfiguration configuration, ILogger<Commands> logger)
+    public Commands(DiscordClient client, IServiceProvider services, IConfiguration configuration,
+        ILogger<Commands> logger)
     {
-        _services = services;
         _logger = logger;
-        _guildId = ulong.Parse(configuration["GuildId"]!);
-    }
+        var guildId = ulong.Parse(configuration["GuildId"]!);
 
-    private void RegisterCommands(SlashCommandsExtension slash)
-    {
-        slash.RegisterCommands<ChannelSize>(_guildId);
-    }
-
-    public void Register(DiscordClient client)
-    {
         if (_isConfigured)
         {
-            _logger.LogWarning("Attempted to configure commands when already configured");
+            logger.LogWarning("Attempted to register commands multiple times");
             return;
         }
 
         var slash = client.UseSlashCommands(new SlashCommandsConfiguration
         {
-            Services = _services
+            Services = services
         });
 
-        RegisterCommands(slash);
+        var registeredModules = RegisterCommands(slash, guildId);
+
+        client.Ready += (_, _) =>
+        {
+            _logger.LogInformation("Registered command modules: {Modules}",
+                string.Join(", ", registeredModules));
+            return Task.CompletedTask;
+        };
+
         slash.SlashCommandErrored += CommandErrored;
 
         _isConfigured = true;
     }
 
-    private static Task SendErrorMessage(InteractionContext ctx, string message, bool ephemeral)
+    private IEnumerable<string> RegisterCommands(SlashCommandsExtension slash, ulong guildId)
+    {
+        // Get all root commands modules in the assembly
+        var rootCommandsModules = Assembly.GetExecutingAssembly().GetTypes()
+            .Where(type => type.IsAssignableTo(typeof(ApplicationCommandModule)) && !type.IsNested)
+            .ToList();
+
+        // Register each module
+        foreach (var module in rootCommandsModules) slash.RegisterCommands(module, guildId);
+
+        return rootCommandsModules.Select(module => module.Name);
+    }
+
+    private static Task SendErrorMessage(BaseContext ctx, string message, bool ephemeral)
     {
         var embed = new DiscordEmbedBuilder()
             .WithTitle("Error")
@@ -56,7 +66,7 @@ public class Commands
 
         return ctx.CreateResponseAsync(embed, ephemeral);
     }
-    
+
     private Task CommandErrored(SlashCommandsExtension slash, SlashCommandErrorEventArgs args)
     {
         var ctx = args.Context;
@@ -72,11 +82,13 @@ public class Commands
                 return checksFailed.FailedChecks[0] switch
                 {
                     RequireUserInChannel requireUserInChannel =>
-                        SendErrorMessage(ctx, $"You must be in {ctx.Guild.GetChannel(requireUserInChannel.ChannelId).Name} to use this command", false),
+                        SendErrorMessage(ctx,
+                            $"You must be in {ctx.Guild.GetChannel(requireUserInChannel.ChannelId).Name} to use this command",
+                            false),
                     _ => Task.CompletedTask
                 };
             default:
-                _logger.LogError(exception, "Error executing command {command}", ctx.CommandName);
+                _logger.LogError(exception, "Error executing command {Command}", ctx.CommandName);
                 return SendErrorMessage(ctx, "An unknown error occurred", false);
         }
     }
