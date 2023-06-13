@@ -1,19 +1,14 @@
-﻿FROM mcr.microsoft.com/dotnet/runtime:7.0 AS base
+﻿FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build-env
 WORKDIR /app
 
-FROM mcr.microsoft.com/dotnet/sdk:7.0 AS build
-WORKDIR /src
-COPY ["OmniBot/OmniBot.csproj", "OmniBot/"]
-RUN dotnet restore "OmniBot/OmniBot.csproj"
-COPY . .
-WORKDIR "/src/OmniBot"
-RUN dotnet build "OmniBot.csproj" -c Release -o /app/build
+COPY . ./
+RUN dotnet restore
+RUN dotnet publish "OmniBot/OmniBot.csproj" -c Release -o /app/publish
 
-FROM build AS publish
-RUN dotnet publish "OmniBot.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-FROM base AS final
+FROM mcr.microsoft.com/dotnet/runtime:7.0 AS final
 WORKDIR /app
-COPY --from=publish /app/publish .
+
+COPY --from=build-env /app/publish .
+
 ENV DOTNET_EnableDiagnostics=0
 ENTRYPOINT ["dotnet", "OmniBot.dll"]
