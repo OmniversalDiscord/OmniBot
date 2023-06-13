@@ -11,7 +11,7 @@ var builder = Host.CreateApplicationBuilder(args);
 
 builder.Configuration.AddYamlFile("appsettings.yml");
 builder.Configuration.AddYamlFile($"appsettings.{builder.Environment.EnvironmentName}.yml", true);
-builder.Configuration.AddSecrets("OmniBot_Secrets");
+builder.Configuration.AddSecrets("SECRETS");
 
 builder.Services
     .AddSingleton<DiscordClient>(provider =>
