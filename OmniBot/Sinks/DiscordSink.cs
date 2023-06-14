@@ -35,6 +35,9 @@ public class DiscordSink : ILogEventSink
         // Discord logs min level is Warning
         if (logEvent.Level < LogEventLevel.Warning) return;
 
+        // Filter out reconnecting messages as they're too frequent and spam me
+        if (logEvent.MessageTemplate.Text.Contains("reconnecting")) return;
+
         if (_logChannel == null) _logChannel = await _client.GetChannelAsync(_logChannelId);
 
         var color = logEvent.Level switch
