@@ -4,8 +4,6 @@ on:
   push:
     branches:
       - main
-    tags:
-      - "*.*.*"
 
 env:
   # Use docker.io for Docker Hub if empty
@@ -14,6 +12,17 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  bump-tag-version:
+    name: Bump and Tag Version
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: jefflinse/pr-semver-bump@v1
+        name: Bump and Tag Version
+        with:
+          mode: bump
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+  
   build:
     runs-on: ubuntu-latest
     permissions:

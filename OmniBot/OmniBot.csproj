@@ -30,9 +30,6 @@
         <Content Include="..\.github\workflows\pr.yml">
           <Link>.github\workflows\pr.yml</Link>
         </Content>
-        <Content Include="..\.github\workflows\tag.yml">
-          <Link>.github\workflows\tag.yml</Link>
-        </Content>
         <Content Include="..\Dockerfile" />
         <Content Include="..\.dockerignore" />
     </ItemGroup>
