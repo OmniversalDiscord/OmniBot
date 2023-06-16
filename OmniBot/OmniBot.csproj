@@ -24,16 +24,19 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Content Include="..\.github\workflows\docker-publish.yml">
+          <Link>.github\workflows\docker-publish.yml</Link>
+        </Content>
         <Content Include="..\Dockerfile" />
         <Content Include="..\.dockerignore" />
     </ItemGroup>
 
     <ItemGroup>
-      <None Update="appsettings.Development.yml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
-      <None Update="appsettings.yml">
-        <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-      </None>
+        <None Update="appsettings.Development.yml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="appsettings.yml">
+            <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
     </ItemGroup>
 </Project>
