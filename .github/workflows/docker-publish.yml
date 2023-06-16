@@ -12,18 +12,6 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
-  bump-tag-version:
-    name: Bump and Tag Version
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v2
-      - uses: jefflinse/pr-semver-bump@v1
-        name: Bump and Tag Version
-        with:
-          mode: bump
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          with-v: true
-  
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -38,6 +26,14 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
+
+      - name: Bump and tag version
+        id: bump-tag-version
+        uses: jefflinse/pr-semver-bump@v1
+        with:
+          mode: bump
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          with-v: true
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
