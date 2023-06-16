@@ -41,12 +41,13 @@ public class Colors : ApplicationCommandModule
             { new(ButtonStyle.Secondary, $"cancel-{_componentId}", "Cancel") };
 
         if (currentColor != null)
-            buttons.Add(new DiscordButtonComponent(ButtonStyle.Danger, $"clear-{_componentId}", "Clear"));
+            buttons.Add(new DiscordButtonComponent(ButtonStyle.Danger, $"clear-{_componentId}", "Clear color"));
 
         await ctx.CreateResponseAsync(new DiscordInteractionResponseBuilder()
             .AddEmbed(embed)
             .AddComponents(selectMenu)
-            .AddComponents(buttons));
+            .AddComponents(buttons)
+            .AsEphemeral());
 
         return await ctx.GetOriginalResponseAsync();
     }
