@@ -15,7 +15,7 @@ jobs:
   bump-tag-version:
     name: Bump and tag version
     runs-on: ubuntu-latest
-    output:
+    outputs:
       version: ${{ steps.bump-and-tag.outputs.version }}
     steps:
       - uses: actions/checkout@v2
@@ -28,6 +28,7 @@ jobs:
           with-v: true
   
   build:
+    name: Build Docker image
     runs-on: ubuntu-latest
     permissions:
       contents: read
