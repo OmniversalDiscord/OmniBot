@@ -12,6 +12,21 @@ env:
   IMAGE_NAME: ${{ github.repository }}
 
 jobs:
+  bump-tag-version:
+    name: Bump and tag version
+    runs-on: ubuntu-latest
+    output:
+      version: ${{ steps.bump-and-tag.outputs.version }}
+    steps:
+      - uses: actions/checkout@v2
+      - name: Bump and tag version
+        uses: jefflinse/pr-semver-bump@v1
+        id: bump-and-tag
+        with:
+          mode: bump
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+          with-v: true
+  
   build:
     runs-on: ubuntu-latest
     permissions:
@@ -21,17 +36,11 @@ jobs:
       # with sigstore/fulcio when running outside of PRs.
       id-token: write
     
+    needs: bump-tag-version
+    
     steps:
       - name: Checkout repository
         uses: actions/checkout@v3
-
-      - name: Bump and tag version
-        id: bump-tag-version
-        uses: jefflinse/pr-semver-bump@v1
-        with:
-          mode: bump
-          repo-token: ${{ secrets.GITHUB_TOKEN }}
-          with-v: true
 
       # Install the cosign tool except on PR
       # https://github.com/sigstore/cosign-installer
@@ -63,9 +72,9 @@ jobs:
         with:
           images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
-            latest
-            ${{ steps.bump-tag-version.outputs.version }}
-
+            - latest
+            - ${{ needs.bump-tag-version.outputs.version }}
+      
       # Build and push Docker image with Buildx (don't push on PR)
       # https://github.com/docker/build-push-action
       - name: Build and push Docker image
