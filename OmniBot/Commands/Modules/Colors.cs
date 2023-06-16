@@ -68,7 +68,7 @@ public class Colors : ApplicationCommandModule
 
         if (response.TimedOut || result.Id == $"cancel-{_componentId}")
         {
-            await message.DeleteAsync();
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().AddEmbed(message.Embeds.First()));
         }
         else if (result.Id == $"clear-{_componentId}")
         {
