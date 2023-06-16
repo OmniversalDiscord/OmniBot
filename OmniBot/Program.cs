@@ -37,8 +37,8 @@ builder.Services
     .Configure<DiscordLoggingOptions>(builder.Configuration.GetSection(DiscordLoggingOptions.Section));
 
 // Only add the Discord sink in production
-// if (builder.Environment.IsProduction())
-builder.Services.AddSingleton<ILogEventSink, DiscordSink>();
+if (builder.Environment.IsProduction())
+    builder.Services.AddSingleton<ILogEventSink, DiscordSink>();
 
 builder.Services
     .AddSerilog((services, configuration) =>
