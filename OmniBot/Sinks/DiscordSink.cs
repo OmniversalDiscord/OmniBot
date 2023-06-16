@@ -1,5 +1,6 @@
 using DSharpPlus;
 using DSharpPlus.Entities;
+using Microsoft.Extensions.Options;
 using Serilog.Core;
 using Serilog.Events;
 
@@ -12,15 +13,11 @@ public class DiscordSink : ILogEventSink
     private readonly string _ping;
     private DiscordChannel? _logChannel;
 
-    public DiscordSink(DiscordClient client, IConfiguration configuration)
+    public DiscordSink(DiscordClient client, IOptions<DiscordLoggingOptions> options)
     {
         _client = client;
-        _logChannelId = ulong.Parse(configuration["Logging:Discord:Channel"]!);
-
-        // Just confirming that the user ID is valid
-        var userId = ulong.Parse(configuration["Logging:Discord:PingUser"]!);
-
-        _ping = $"<@{userId}>";
+        _logChannelId = options.Value.Channel;
+        _ping = $"<@{options.Value.PingUser}>";
     }
 
     public void Emit(LogEvent logEvent)

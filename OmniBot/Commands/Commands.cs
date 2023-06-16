@@ -1,9 +1,14 @@
 using System.Reflection;
 using DSharpPlus;
 using DSharpPlus.Entities;
+using DSharpPlus.Interactivity;
+using DSharpPlus.Interactivity.Enums;
+using DSharpPlus.Interactivity.Extensions;
 using DSharpPlus.SlashCommands;
 using DSharpPlus.SlashCommands.EventArgs;
+using Microsoft.Extensions.Options;
 using OmniBot.Commands.Attributes;
+using OmniBot.Models;
 
 namespace OmniBot.Commands;
 
@@ -12,11 +17,11 @@ public class Commands
     private static bool _isConfigured;
     private readonly ILogger<Commands> _logger;
 
-    public Commands(DiscordClient client, IServiceProvider services, IConfiguration configuration,
+    public Commands(DiscordClient client, IServiceProvider services, IOptions<GeneralOptions> options,
         ILogger<Commands> logger)
     {
         _logger = logger;
-        var guildId = ulong.Parse(configuration["GuildId"]!);
+        var guildId = options.Value.GuildId;
 
         if (_isConfigured)
         {
@@ -27,6 +32,12 @@ public class Commands
         var slash = client.UseSlashCommands(new SlashCommandsConfiguration
         {
             Services = services
+        });
+
+        client.UseInteractivity(new InteractivityConfiguration
+        {
+            PollBehaviour = PollBehaviour.KeepEmojis,
+            Timeout = TimeSpan.FromSeconds(60)
         });
 
         var registeredModules = RegisterCommands(slash, guildId);
@@ -43,7 +54,7 @@ public class Commands
         _isConfigured = true;
     }
 
-    private IEnumerable<string> RegisterCommands(SlashCommandsExtension slash, ulong guildId)
+    private static IEnumerable<string> RegisterCommands(SlashCommandsExtension slash, ulong guildId)
     {
         // Get all root commands modules in the assembly
         var rootCommandsModules = Assembly.GetExecutingAssembly().GetTypes()
@@ -87,6 +98,10 @@ public class Commands
                             false),
                     _ => Task.CompletedTask
                 };
+            case RoleSectionNotFoundException sectionNotFound:
+                return SendErrorMessage(ctx,
+                    $"A command tried to access the {sectionNotFound.SectionName} role section, but no section was found",
+                    false);
             default:
                 _logger.LogError(exception, "Error executing command {Command}", ctx.CommandName);
                 return SendErrorMessage(ctx, "An unknown error occurred", false);

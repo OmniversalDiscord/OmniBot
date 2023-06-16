@@ -1,12 +1,15 @@
-guildId: 299346213126275072
+general:
+  guildId: 299346213126275072
+
+roles:
+  sectionPattern: ">>> (\\w+) <<<"
 
 lavalink:
   host: localhost
   port: 2333
 
 logging:
-  logLevel:
-    default: Information
+  minimumLevel: Information
   discord:
     channel: 371028953499959296
     pingUser: 131859790593785856

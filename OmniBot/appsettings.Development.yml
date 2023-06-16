@@ -1,7 +1,10 @@
-guildId: 342309270139830272
+general:
+  guildId: 342309270139830272
 
 logging:
-  logLevel:
+  minimumLevel:
     default: Debug
-  discord:
-    channel: 481945686942810148
+    override:
+      DSharpPlus: Information
+    discord:
+      channel: 481945686942810148
