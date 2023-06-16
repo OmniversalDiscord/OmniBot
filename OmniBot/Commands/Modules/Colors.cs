@@ -72,7 +72,7 @@ public class Colors : ApplicationCommandModule
         else if (result.Id == $"clear-{_componentId}")
         {
             await _colorService.ClearColorForMember(ctx.Member);
-            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("Your no longer have a color"));
+            await ctx.EditResponseAsync(new DiscordWebhookBuilder().WithContent("You no longer have a color"));
         }
         else
         {
