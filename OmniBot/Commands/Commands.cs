@@ -41,6 +41,7 @@ public class Commands
         });
 
         var registeredModules = RegisterCommands(slash, guildId);
+        InvalidSlashCommandHandler.Register(client);
 
         client.Ready += (_, _) =>
         {
